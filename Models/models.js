@@ -1,20 +1,23 @@
 const mongoose = require("mongoose");
 
-const taskSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "name is required"],
-    trim: true,
-    maxlength: [20, "name can not be more than 20 characters"],
+const urlSchema = new mongoose.Schema(
+  {
+    shortId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    redirectURL: {
+      type: String,
+      required: true,
+    },
+    visitHistory: [{ timestamp: { type: Number } }],
   },
-  completed: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { timestamp: true }
+);
 
-const Task = mongoose.model("Task", taskSchema);
+const URL = mongoose.model("url", urlSchema);
 
 module.exports = {
-  Task,
+  URL,
 };

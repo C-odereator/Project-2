@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
 });
 
 //routes
-app.use("/api/v1/tasks", router);
+app.use("/user", router);
 
 app.listen(process.env.port || 3000, () => {
   console.log(`Server is running on port ${process.env.port}`);
