@@ -2,16 +2,14 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  // getTasks,
   getAllTasks,
-  // updateTasks,
-  // deleteTasks,
+  analytics,
   createTasks,
 } = require("../Conrollers/controller");
 
 router.route("/").get(getAllTasks).post(createTasks);
 
-// router.route("/:id").get(getTasks).patch(updateTasks).delete(deleteTasks);
+router.get("/analytics/:shortId", analytics);
 
 module.exports = {
   router,

@@ -4,7 +4,7 @@ const { URL } = require("../Models/models.js");
 const getAllTasks = async (req, res) => {
   try {
     const task = await URL.find({});
-    res.status(200).json(task);
+    res.status(200).json(task.shortId);
   } catch (error) {
     res.status(500).json({ message: "Not User Found" });
   }
@@ -20,69 +20,53 @@ const createTasks = async (req, res) => {
     redirectURL: body.url,
     visitHistory: [],
   });
-
   return res.json({ id: shortID });
 };
 
-// const getTasks = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const data = await Task.findById(id);
-//     if (data) {
-//       res.json(data);
-//     } else {
-//       res.status(404).json({ message: "Data Not Found" });
-//     }
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ message: "Error Occured" });
-//   }
-// };
+const analytics = async (req, res) => {
+  const shortId = req.params.shortId;
+  const result = await URL.findOne({ shortId });
+  return res.json({
+    totalClicks: result.visitHistory.length,
+    analytics: result.visitHistory,
+  });
+};
 
-// const updateTasks = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const data = req.body;
-//     const updatedData = await Task.findByIdAndUpdate(id, data, { new: true });
-//     if (updatedData) {
-//       res.json(updatedData);
-//     } else {
-//       res.status(404).json({ message: "Data Not Found" });
-//     }
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ message: "Error Occured" });
-//   }
-//   // try {
-//   //   const { id: taskId } = req.params;
-//   //   const task = await Task.findByIdAndUpdate({ _id: taskId }, req.body);
-//   //   if (!task) {
-//   //     return res.status(404).json({ msg: `No task with id : ${taskId}` });
-//   //   }
-//   //   res.status(200).json(task);
-//   // } catch (err) {
-//   //   res.status(500).json({ msg: error });
-//   // }
-// };
+// const analytics = (req, res) => {
+//   // Extract shortId from request parameters
+//   const shortId = req.params.shortId;
 
-// const deleteTasks = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const data = await Task.findByIdAndDelete(id);
-//     if (data) {
-//       res.json({ message: "Data Deleted" });
-//     } else {
-//       res.status(404).json({ message: "Data Not Found" });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ message: "Error Occured" });
-//   }
+//   // Assuming URL is a Mongoose model
+//   // Find the URL document in the database based on shortId
+//   const result = URL.findOne({ shortId });
+
+//   // Handle the result asynchronously using promises or async/await
+//   result
+//     .then((url) => {
+//       // If URL with shortId is found
+//       if (url) {
+//         // Construct the response JSON
+//         const responseJson = {
+//           totalClicks: url.visitHistory.length, // Get total clicks from visitHistory array
+//           analytics: url.visitHistory, // Return the entire visitHistory array
+//         };
+
+//         // Send the JSON response
+//         return res.json(responseJson);
+//       } else {
+//         // If URL with shortId is not found, send 404 Not Found response
+//         return res.status(404).json({ error: "URL not found" });
+//       }
+//     })
+//     .catch((err) => {
+//       // Handle any errors that occur during the database query
+//       console.error("Error fetching analytics:", err);
+//       return res.status(500).json({ error: "Internal server error" });
+//     });
 // };
 
 module.exports = {
   getAllTasks,
   createTasks,
-  // getTasks,
-  // updateTasks,
-  // deleteTasks,
+  analytics,
 };
